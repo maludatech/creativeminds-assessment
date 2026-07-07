@@ -1,0 +1,214 @@
+.chat-panel {
+  width: var(--chat-panel-width);
+  flex-shrink: 0;
+  border-left: 1px solid var(--color-border);
+  background: var(--color-bg-surface);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  padding: 20px;
+}
+
+.chat-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.chat-panel__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-panel__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.chat-panel__name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-panel__live {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--color-success);
+  background: var(--color-success-soft);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.chat-panel__subtitle {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+}
+
+.chat-panel__expand {
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+}
+
+.chat-panel__close {
+  display: none;
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.chat-panel__grounding {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: var(--color-bg-page);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  margin: 16px 0;
+}
+
+.chat-panel__messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 2px;
+}
+
+.chat-bubble {
+  max-width: 88%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.chat-bubble--user {
+  align-self: flex-end;
+  background: var(--color-accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble--ai {
+  align-self: flex-start;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  border-bottom-left-radius: 4px;
+}
+
+.chat-panel__timestamp {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  color: var(--color-text-tertiary);
+}
+
+.chat-panel__suggested {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 0 12px;
+  border-top: 1px solid var(--color-border);
+  margin-top: 10px;
+}
+
+.chat-panel__suggested-label {
+  width: 100%;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+
+.chat-panel__suggestion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--color-border-strong);
+  background: #fff;
+  border-radius: var(--radius-pill);
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  color: var(--color-text-primary);
+  cursor: pointer;
+}
+
+.chat-panel__input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  padding: 8px 8px 8px 16px;
+}
+
+.chat-panel__input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 0.86rem;
+  min-width: 0;
+}
+
+.chat-panel__input-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-text-tertiary);
+  flex-shrink: 0;
+}
+
+.chat-panel__send {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+@media (max-width: 1024px) {
+  .chat-panel {
+    position: fixed;
+    right: 0;
+    z-index: 30;
+    width: min(var(--chat-panel-width), 100vw);
+    transform: translateX(100%);
+    transition: transform 0.2s ease;
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+  }
+
+  .chat-panel.chat-panel--open {
+    transform: translateX(0);
+  }
+
+  .chat-panel__expand {
+    display: none;
+  }
+
+  .chat-panel__close {
+    display: inline-flex;
+  }
+}

@@ -1,0 +1,102 @@
+.pair-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+
+.pair-list__search {
+  flex-shrink: 0;
+  padding: 10px 14px;
+  border: 1px solid #dcdfe4;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.pair-list__search:focus {
+  outline: none;
+  border-color: #f0913a;
+}
+
+.pair-list__message {
+  padding: 16px 4px;
+  color: #6b6f76;
+  font-size: 0.9rem;
+}
+
+.pair-list__message--error {
+  color: #d0402c;
+}
+
+.pair-list__message--error button {
+  margin-top: 8px;
+  padding: 6px 14px;
+  border: 1px solid #d0402c;
+  border-radius: 6px;
+  background: none;
+  color: #d0402c;
+  cursor: pointer;
+}
+
+.pair-list__items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.pair-list__item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  text-align: left;
+}
+
+.pair-list__item:hover {
+  background: #f5f6f8;
+}
+
+.pair-list__item--active {
+  background: #fff1e6;
+}
+
+.pair-list__symbol {
+  font-weight: 600;
+  color: #1c1e21;
+}
+
+.pair-list__quote {
+  font-weight: 400;
+  color: #8a8d94;
+}
+
+.pair-list__price {
+  color: #1c1e21;
+  font-variant-numeric: tabular-nums;
+}
+
+.pair-list__change {
+  min-width: 64px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.pair-list__change--up {
+  color: #1a9c50;
+}
+
+.pair-list__change--down {
+  color: #d0402c;
+}

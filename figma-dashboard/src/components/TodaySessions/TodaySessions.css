@@ -1,0 +1,126 @@
+.today-sessions {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  height: 100%;
+}
+
+.today-sessions__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.today-sessions__header h3 {
+  margin: 0 0 2px;
+  font-size: 1rem;
+}
+
+.today-sessions__header span {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.today-sessions__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-row {
+  display: grid;
+  grid-template-columns: 74px 1fr auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.session-row:last-child {
+  border-bottom: none;
+}
+
+.session-row--live {
+  background: var(--color-accent-soft);
+  border-bottom-color: transparent;
+}
+
+.session-row__time {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.session-row__body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.session-row__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.session-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  color: var(--color-text-tertiary);
+}
+
+.session-row__live {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-danger);
+}
+
+.session-row__live::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+
+.session-row__eta {
+  font-size: 0.78rem;
+  color: var(--color-info);
+  font-weight: 600;
+}
+
+.session-row__scheduled {
+  font-size: 0.78rem;
+  color: var(--color-text-tertiary);
+}
+
+@media (max-width: 640px) {
+  .session-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      'time state'
+      'body body'
+      'action action';
+  }
+
+  .session-row__time {
+    grid-area: time;
+  }
+
+  .session-row__body {
+    grid-area: body;
+  }
+}

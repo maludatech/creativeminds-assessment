@@ -1,0 +1,57 @@
+.app {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.app__header h1 {
+  margin: 0 0 4px;
+  font-size: 1.6rem;
+}
+
+.app__header p {
+  margin: 0 0 20px;
+  color: var(--text-muted);
+}
+
+.app__main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 20px;
+}
+
+.app__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  min-height: 0;
+}
+
+.app__panel--pairs {
+  max-height: 70vh;
+}
+
+.app__panel--ticker {
+  max-height: 70vh;
+}
+
+@media (max-width: 760px) {
+  .app {
+    padding: 16px;
+  }
+
+  .app__main {
+    grid-template-columns: 1fr;
+  }
+
+  .app__panel--pairs,
+  .app__panel--ticker {
+    max-height: 60vh;
+  }
+}

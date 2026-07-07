@@ -1,0 +1,48 @@
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f1f2f4;
+  color: #55585e;
+}
+
+.connection-badge__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.connection-badge--connected {
+  background: #e6f7ed;
+  color: #1a9c50;
+}
+
+.connection-badge--connecting,
+.connection-badge--reconnecting {
+  background: #fff4e0;
+  color: #b5760a;
+}
+
+.connection-badge--reconnecting .connection-badge__dot {
+  animation: pulse 1s infinite ease-in-out;
+}
+
+.connection-badge--disconnected {
+  background: #fdeceb;
+  color: #d0402c;
+}
+
+.connection-badge--idle {
+  background: #f1f2f4;
+  color: #83868c;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}

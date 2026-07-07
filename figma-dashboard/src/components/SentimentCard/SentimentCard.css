@@ -1,0 +1,38 @@
+.sentiment-card {
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  height: 100%;
+}
+
+.sentiment-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.sentiment-card__header h3 {
+  margin: 0 0 2px;
+  font-size: 1rem;
+}
+
+.sentiment-card__header span {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.sentiment-card__bar {
+  display: flex;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.sentiment-card__segment:first-child {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.sentiment-card__segment:last-child {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}

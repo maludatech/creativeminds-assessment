@@ -1,0 +1,105 @@
+.report-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 22px;
+  background: var(--color-purple-soft);
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.report-card__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--color-purple-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.report-card__body {
+  flex: 1;
+  min-width: 240px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.report-card__heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.report-card__heading h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.report-card__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  color: var(--color-purple-strong);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.report-card__badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-purple-strong);
+}
+
+.report-card__description {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  max-width: 640px;
+}
+
+.report-card__progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.report-card__bar {
+  width: 260px;
+  max-width: 40vw;
+  height: 6px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  overflow: hidden;
+}
+
+.report-card__bar-fill {
+  height: 100%;
+  background: var(--color-purple-strong);
+  border-radius: var(--radius-pill);
+}
+
+.report-card__progress-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-purple-strong);
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .report-card__bar {
+    max-width: 100%;
+  }
+
+  .report-card__progress {
+    flex-wrap: wrap;
+  }
+}
