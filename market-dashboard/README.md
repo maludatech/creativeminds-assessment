@@ -27,7 +27,9 @@ instead of calling `api.binance.com` directly from the browser:
 - **Production (Vercel)** — `api/binance/[...path].ts` is an edge function that does the same
   thing, whitelisting only the two paths this app actually uses (`exchangeInfo`, `ticker/24hr`)
   rather than forwarding an arbitrary path, so it can't be abused as an open proxy to the rest of
-  Binance's API.
+  Binance's API. It's pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For Legal
+  Reasons` to requests that appear to originate from the US, and Vercel's edge network otherwise
+  routes to whichever region is nearest the visitor, which can land on a US region.
 
 This means the **deployed version works for everyone**, including reviewers on a network that
 blocks Binance, because the edge function runs on Vercel's infrastructure, not the reviewer's ISP.
