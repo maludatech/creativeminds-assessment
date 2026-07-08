@@ -26,22 +26,28 @@ instead of calling `api.binance.com` directly from the browser:
 - **Local dev** — `vite.config.ts` proxies `/api/binance/exchange-info` and `/api/binance/ticker-24hr`
   to the corresponding `api.binance.com/api/v3/*` endpoints.
 - **Production (Vercel)** — `api/binance/exchange-info.ts` and `api/binance/ticker-24hr.ts` are two
-  small Node.js Serverless Functions, each hardcoded to proxy exactly one upstream endpoint (via
-  the shared `api/_lib/binanceProxy.ts` helper) rather than accepting an arbitrary path, so
-  there's no way to abuse the deployment as an open proxy to the rest of Binance's API. They use
-  the Web-standard `Request → Response` handler signature, not the classic Express-style
-  `(req, res)` one — Vercel's current Node.js runtime (Fluid Compute) expects the former; the
-  latter crashed with `FUNCTION_INVOCATION_FAILED` before the handler even ran.
-  (Two earlier attempts: a catch-all `api/binance/[...path].ts` route 404'd on Vercel's router for
-  the two-segment `ticker/24hr` path before it ever reached the function; and pinning `regions` on
-  the Edge runtime also crashed, since Vercel only honors per-function region pinning on the
-  Node.js runtime, not Edge.) They're
-  pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For Legal Reasons` to requests
-  that appear to originate from the US, and Vercel otherwise routes to whichever region is nearest
-  the visitor, which can land on a US region.
+  small, deliberately self-contained Node.js Serverless Functions, each hardcoded to proxy exactly
+  one upstream endpoint, so there's no way to abuse the deployment as an open proxy to the rest of
+  Binance's API. Notable constraints that shaped the final shape of these two files:
+  - **Web-standard `Request → Response` handler signature**, not the classic Express-style
+    `(req, res)` one — Vercel's current Node.js runtime (Fluid Compute) expects the former; the
+    latter crashed with `FUNCTION_INVOCATION_FAILED` before the handler even ran.
+  - **No shared helper module.** An earlier version factored the proxy logic into
+    `api/_lib/binanceProxy.ts` and imported it from both functions. Vercel excludes `_`-prefixed
+    files/folders under `api/` from bundling (not just from becoming their own route), so the
+    import worked locally but threw `ERR_MODULE_NOT_FOUND` in production. Each function now
+    inlines its own ~10 lines rather than sharing an import.
+  - **Pinned to `regions: ['fra1']`** — Binance returns `451 Unavailable For Legal Reasons` to
+    requests that appear to originate from the US, and Vercel otherwise routes to whichever region
+    is nearest the visitor, which can land on a US region. Region pinning only works on the
+    Node.js runtime, not Edge.
+  - **A single catch-all route (`api/binance/[...path].ts`) was tried first** but Vercel's router
+    404'd on the two-segment `ticker/24hr` path before it ever reached the function — two
+    statically-named files sidestep that entirely.
 
 This means the **deployed version works for everyone**, including reviewers on a network that
-blocks Binance, because the edge function runs on Vercel's infrastructure, not the reviewer's ISP.
+blocks Binance, because the serverless function runs on Vercel's infrastructure, not the
+reviewer's ISP.
 **Local dev on a Binance-blocked network still needs a VPN or a different DNS resolver** — the
 Vite proxy runs as a local Node process on your own machine, so it's subject to the same network
 block as a direct browser request would be. Once deployed, the DNS-block problem only exists for
