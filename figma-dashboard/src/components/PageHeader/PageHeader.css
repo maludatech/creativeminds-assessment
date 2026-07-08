@@ -13,9 +13,14 @@
   max-width: 785px;
 }
 
+.page-header__title-wrap {
+  padding-top: 0.67px;
+  padding-bottom: 1.33px;
+}
+
 .page-header__text h1 {
   margin: 0;
-  font-family: 'General Sans', sans-serif;
+  font-family: "General Sans", sans-serif;
   font-weight: 600;
   font-size: 23px;
   line-height: 100%;
@@ -23,9 +28,15 @@
   color: #2c2c30;
 }
 
-.page-header__text p {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
+.page-header__subtitle-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.page-header__subtitle-wrap span {
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-size: 12px;
   line-height: 100%;
@@ -51,7 +62,7 @@
 }
 
 .page-header__team-btn span {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   font-size: 14px;
   line-height: 15.6px;
@@ -82,7 +93,7 @@
 }
 
 .page-header__new-session-btn span {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
   font-size: 14px;
   line-height: 15.6px;

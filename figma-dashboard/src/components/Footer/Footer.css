@@ -5,7 +5,6 @@
   flex-wrap: wrap;
   gap: 6px;
   padding: 16px 28px;
-  border-top: 1px solid var(--color-border);
   text-align: center;
 }
 

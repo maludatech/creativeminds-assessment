@@ -49,12 +49,12 @@ export function Dashboard() {
                 </div>
               </div>
             </div>
-
-            <Footer />
           </div>
 
           <ChatPanel isOpen={isChatOpen} onClose={closeOverlays} />
         </div>
+
+        <Footer />
       </div>
 
       {(isSidebarOpen || isChatOpen) && (

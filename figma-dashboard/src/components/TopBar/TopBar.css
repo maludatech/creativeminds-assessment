@@ -211,7 +211,7 @@
 
   .topbar {
     padding: 0 14px;
-    margin: 10px 12px 0;
+    margin: calc(10px + env(safe-area-inset-top, 0px)) 12px 0;
   }
 
   .topbar__actions {
