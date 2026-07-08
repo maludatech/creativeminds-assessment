@@ -26,14 +26,16 @@ instead of calling `api.binance.com` directly from the browser:
 - **Local dev** — `vite.config.ts` proxies `/api/binance/exchange-info` and `/api/binance/ticker-24hr`
   to the corresponding `api.binance.com/api/v3/*` endpoints.
 - **Production (Vercel)** — `api/binance/exchange-info.ts` and `api/binance/ticker-24hr.ts` are two
-  small edge functions, each hardcoded to proxy exactly one upstream endpoint (via the shared
-  `api/_lib/binanceProxy.ts` helper) rather than accepting an arbitrary path, so there's no way to
-  abuse the deployment as an open proxy to the rest of Binance's API. (An earlier version used a
-  single catch-all `api/binance/[...path].ts` route, but Vercel's router 404'd on the two-segment
-  `ticker/24hr` path before it ever reached the function — two statically-named routes sidestep
-  that entirely.) Both are pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For
-  Legal Reasons` to requests that appear to originate from the US, and Vercel's edge network
-  otherwise routes to whichever region is nearest the visitor, which can land on a US region.
+  small Node.js Serverless Functions, each hardcoded to proxy exactly one upstream endpoint (via
+  the shared `api/_lib/binanceProxy.ts` helper) rather than accepting an arbitrary path, so
+  there's no way to abuse the deployment as an open proxy to the rest of Binance's API.
+  (Two earlier attempts: a catch-all `api/binance/[...path].ts` route 404'd on Vercel's router for
+  the two-segment `ticker/24hr` path before it ever reached the function; and pinning `regions` on
+  the Edge runtime crashed with `FUNCTION_INVOCATION_FAILED`, since Vercel only honors per-function
+  region pinning on the classic Node.js runtime, not Edge. Both are now Node functions.) They're
+  pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For Legal Reasons` to requests
+  that appear to originate from the US, and Vercel otherwise routes to whichever region is nearest
+  the visitor, which can land on a US region.
 
 This means the **deployed version works for everyone**, including reviewers on a network that
 blocks Binance, because the edge function runs on Vercel's infrastructure, not the reviewer's ISP.
