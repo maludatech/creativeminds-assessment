@@ -2,9 +2,11 @@
 // Legal Reasons) to US-origin requests, and Vercel otherwise routes to
 // whichever region is nearest the visitor, which can land on a US region.
 //
-// Web-standard Request/Response signature, not the classic (req, res)
-// Express-style one — Vercel's Node.js runtime (Fluid Compute) expects this
-// form.
+// Named `GET` export using the Web-standard Request/Response signature.
+// A default export is interpreted as the classic (req, res) => void
+// signature, which silently discards a returned Response (Vercel logs
+// "default export returned a `Response`... returns are ignored") — the
+// request just hangs instead of erroring.
 //
 // Deliberately self-contained (no relative import of a shared helper):
 // Vercel excludes `_`-prefixed files/folders under api/ from bundling, which
@@ -12,7 +14,7 @@
 // ERR_MODULE_NOT_FOUND in production despite working locally.
 export const config = { regions: ['fra1'] };
 
-export default async function handler(): Promise<Response> {
+export async function GET(): Promise<Response> {
   const upstream = await fetch('https://api.binance.com/api/v3/exchangeInfo');
   const body = await upstream.text();
   return new Response(body, {

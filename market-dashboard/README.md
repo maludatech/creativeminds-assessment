@@ -29,9 +29,13 @@ instead of calling `api.binance.com` directly from the browser:
   small, deliberately self-contained Node.js Serverless Functions, each hardcoded to proxy exactly
   one upstream endpoint, so there's no way to abuse the deployment as an open proxy to the rest of
   Binance's API. Notable constraints that shaped the final shape of these two files:
-  - **Web-standard `Request → Response` handler signature**, not the classic Express-style
-    `(req, res)` one — Vercel's current Node.js runtime (Fluid Compute) expects the former; the
-    latter crashed with `FUNCTION_INVOCATION_FAILED` before the handler even ran.
+  - **Named `export async function GET()`**, not a default export — a default export is
+    interpreted as the classic `(req, res) => void` signature, which silently discards a returned
+    `Response` (the request just hangs) rather than erroring. A default export using the
+    Web-standard `Request → Response` signature also separately crashed with
+    `FUNCTION_INVOCATION_FAILED`; a classic `(req, res)` default export crashed the same way for a
+    different reason. The named `GET` export combined with a `Response` return is the form Vercel's
+    current Node.js runtime (Fluid Compute) actually expects.
   - **No shared helper module.** An earlier version factored the proxy logic into
     `api/_lib/binanceProxy.ts` and imported it from both functions. Vercel excludes `_`-prefixed
     files/folders under `api/` from bundling (not just from becoming their own route), so the
