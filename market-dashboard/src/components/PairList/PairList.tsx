@@ -21,15 +21,36 @@ export function PairList() {
 
   return (
     <div className="pair-list">
-      <input
-        className="pair-list__search"
-        type="text"
-        placeholder="Search trading pairs (e.g. BTCUSDT)"
-        value={searchTerm}
-        onChange={(e) => dispatch(setSearchTerm(e.target.value))}
-      />
+      <div className="pair-list__toolbar">
+        <div className="pair-list__search-wrap">
+          <svg className="pair-list__search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+            <path d="M20 20L16.5 16.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+          <input
+            className="pair-list__search"
+            type="text"
+            placeholder="Search pairs (e.g. BTCUSDT)"
+            value={searchTerm}
+            onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+          />
+        </div>
+        {status === 'succeeded' && (
+          <span className="pair-list__count">{filteredItems.length.toLocaleString()} pairs</span>
+        )}
+      </div>
 
-      {status === 'loading' && <p className="pair-list__message">Loading trading pairs…</p>}
+      {status === 'loading' && (
+        <ul className="pair-list__items" aria-hidden="true">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <li key={i} className="pair-list__skeleton-row">
+              <span className="pair-list__skeleton pair-list__skeleton--symbol" />
+              <span className="pair-list__skeleton pair-list__skeleton--price" />
+              <span className="pair-list__skeleton pair-list__skeleton--change" />
+            </li>
+          ))}
+        </ul>
+      )}
 
       {status === 'failed' && (
         <div className="pair-list__message pair-list__message--error">
