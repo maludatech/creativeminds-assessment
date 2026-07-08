@@ -9,7 +9,11 @@
 // FUNCTION_INVOCATION_FAILED before the handler even ran.
 export async function proxyBinance(binancePath: string): Promise<Response> {
   const upstream = await fetch(`https://api.binance.com/api/v3/${binancePath}`);
-  return new Response(upstream.body, {
+  // Buffered as text rather than passing upstream.body (a ReadableStream)
+  // straight through — streaming response bodies through the Response
+  // constructor is inconsistent across Node fetch implementations.
+  const body = await upstream.text();
+  return new Response(body, {
     status: upstream.status,
     headers: { 'content-type': upstream.headers.get('content-type') ?? 'application/json' },
   });
