@@ -71,14 +71,23 @@ export function TodaySessions() {
                 {session.mode} &middot; {session.duration} &middot; {session.person}
               </span>
             </div>
-            {session.state === 'live' && <span className="session-row__live">Live now</span>}
+            {session.state === 'live' && (
+              <span className="session-row__live">
+                <span className="session-row__live-dot" />
+                Live now
+              </span>
+            )}
             {session.state === 'upcoming' && <span className="session-row__eta">In 3 hrs</span>}
             {session.state === 'scheduled' && (
               <span className="session-row__scheduled">Scheduled</span>
             )}
             <button
               className={
-                session.state === 'scheduled' ? 'link' : 'btn btn--solid btn--sm'
+                session.state === 'scheduled'
+                  ? 'session-row__view-btn'
+                  : session.state === 'live'
+                    ? 'session-row__join-btn'
+                    : 'session-row__start-btn'
               }
             >
               {session.actionLabel}

@@ -1,4 +1,3 @@
-import { Icon } from '../Icon/Icon';
 import './ReportCard.css';
 
 export function ReportCard() {
@@ -9,7 +8,7 @@ export function ReportCard() {
   return (
     <div className="report-card">
       <div className="report-card__icon">
-        <Icon name="clipboard" size={22} />
+        <img src="/report.svg" alt="" />
       </div>
 
       <div className="report-card__body">
@@ -34,8 +33,8 @@ export function ReportCard() {
         </div>
       </div>
 
-      <button className="btn btn--disabled" disabled>
-        <Icon name="lock" size={16} />
+      <button className="report-card__locked-btn" disabled>
+        <img src="/locked.svg" alt="" />
         Locked
       </button>
     </div>

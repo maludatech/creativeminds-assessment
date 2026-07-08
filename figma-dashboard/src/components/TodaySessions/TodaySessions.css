@@ -1,7 +1,9 @@
 .today-sessions {
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-  padding: 20px 22px;
+  container-type: inline-size;
+  container-name: today-sessions;
+  border: 1px solid #edeff5;
+  border-radius: 12px;
+  background: #ffffff;
   height: 100%;
 }
 
@@ -9,26 +11,46 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 10px;
+  padding: 14px 18px 12px;
 }
 
 .today-sessions__header h3 {
   margin: 0 0 2px;
-  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 100%;
+  letter-spacing: 0.06px;
+  color: #2c2c30;
 }
 
 .today-sessions__header span {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #a3a6b7;
+}
+
+.today-sessions__header .link {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  color: #f48322;
 }
 
 .today-sessions__list {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 18px 18px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .session-row {
@@ -36,24 +58,24 @@
   grid-template-columns: 74px 1fr auto auto;
   align-items: center;
   gap: 14px;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.session-row:last-child {
-  border-bottom: none;
+  padding: 10.67px 11.67px;
+  border-radius: 10px;
+  background: #f8f9fb;
+  border: 1px solid #edeff5;
 }
 
 .session-row--live {
-  background: var(--color-accent-soft);
-  border-bottom-color: transparent;
+  background: rgba(255, 239, 225, 0.6);
+  border: none;
 }
 
 .session-row__time {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
+  font-family: 'Consolas', 'SFMono-Regular', Menlo, Monaco, monospace;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #2c2c30;
 }
 
 .session-row__body {
@@ -64,8 +86,12 @@
 }
 
 .session-row__title {
-  font-weight: 600;
-  font-size: 0.9rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #2c2c30;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -75,45 +101,138 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 0.78rem;
-  color: var(--color-text-tertiary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #72747d;
 }
 
 .session-row__live {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 5px;
+  width: 87.31px;
+  height: 26.56px;
+  padding: 3.67px 9px 3.66px;
+  border-radius: 999px;
+  background: #fee8e8;
+  font-family: 'Poppins', sans-serif;
   font-size: 0.78rem;
   font-weight: 600;
   color: var(--color-danger);
+  white-space: nowrap;
 }
 
-.session-row__live::before {
-  content: '';
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-danger);
+.session-row__live-dot {
+  width: 7.03px;
+  height: 7.03px;
+  border-radius: 3.52px;
+  background: #ea5455;
+  flex-shrink: 0;
+}
+
+.session-row__join-btn {
+  width: 59.44px;
+  height: 32.5px;
+  border-radius: 8px;
+  padding: 5.17px 11.67px 5.57px;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.session-row__join-btn:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
 }
 
 .session-row__eta {
-  font-size: 0.78rem;
-  color: var(--color-info);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 65.69px;
+  height: 26.56px;
+  padding: 3.67px 9px 3.66px;
+  border-radius: 999px;
+  background: #f7fcff;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
+  font-size: 10.5px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #567abd;
+  white-space: nowrap;
 }
 
 .session-row__scheduled {
-  font-size: 0.78rem;
-  color: var(--color-text-tertiary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 87.55px;
+  height: 26.56px;
+  padding: 3.67px 9px 3.66px;
+  border-radius: 999px;
+  background: #f8f9fb;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 10.5px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #72747d;
+  white-space: nowrap;
 }
 
-@media (max-width: 640px) {
+.session-row__start-btn {
+  width: 63.59px;
+  height: 32.5px;
+  border-radius: 8px;
+  padding: 5.17px 11.67px 5.57px;
+  background: #ffffff;
+  border: 1px solid #e8eaf1;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14.4px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #5e5873;
+  cursor: pointer;
+}
+
+.session-row__start-btn:hover {
+  background: var(--color-bg-page);
+}
+
+.session-row__view-btn {
+  width: 47.81px;
+  height: 23.44px;
+  padding: 1.67px 6px 1.66px;
+  background: none;
+  border: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  color: var(--color-accent);
+  cursor: pointer;
+}
+
+@container today-sessions (max-width: 480px) {
   .session-row {
     grid-template-columns: 1fr auto;
     grid-template-areas:
       'time state'
       'body body'
       'action action';
+    row-gap: 8px;
   }
 
   .session-row__time {
@@ -122,5 +241,19 @@
 
   .session-row__body {
     grid-area: body;
+  }
+
+  .session-row__live,
+  .session-row__eta,
+  .session-row__scheduled {
+    grid-area: state;
+    justify-self: end;
+  }
+
+  .session-row__join-btn,
+  .session-row__start-btn,
+  .session-row__view-btn {
+    grid-area: action;
+    width: 100%;
   }
 }

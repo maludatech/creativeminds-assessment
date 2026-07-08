@@ -10,32 +10,32 @@ export function TopBar({ onMenuClick, onChatClick }: { onMenuClick: () => void; 
         </button>
         <div className="topbar__breadcrumb">
           <span className="topbar__crumb-muted">Dashboard</span>
-          <Icon name="chevron-right" size={14} />
+          <img className="topbar__crumb-arrow" src="/arrow-right-icon.svg" alt="" />
           <span className="topbar__crumb-active">Moments</span>
         </div>
       </div>
 
       <div className="topbar__actions">
         <button className="topbar__chat-btn" onClick={onChatClick}>
-          <Icon name="sparkles" size={16} />
+          <img className="topbar__chat-btn-icon" src="/stars.svg" alt="" />
           <span>Chat with AI</span>
         </button>
 
         <button className="topbar__bell" aria-label="Notifications">
-          <Icon name="bell" size={20} />
+          <Icon name="bell" size={28} />
           <span className="topbar__bell-badge">4</span>
         </button>
 
         <div className="topbar__user">
-          <img
-            className="topbar__avatar"
-            alt="John Doe"
-            src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Crect width='40' height='40' fill='%23d8dbe3'/%3E%3C/svg%3E"
-          />
           <div className="topbar__user-text">
             <span className="topbar__user-name">John Doe</span>
             <span className="topbar__user-role">Admin</span>
           </div>
+          <div className="topbar__avatar-wrap">
+            <img className="topbar__avatar" alt="John Doe" src="/profile.png" />
+            <span className="topbar__avatar-status" />
+          </div>
+          <img className="topbar__user-caret" src="/caret-down.svg" alt="" />
         </div>
       </div>
     </header>

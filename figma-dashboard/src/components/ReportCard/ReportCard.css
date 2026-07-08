@@ -2,22 +2,27 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 20px 22px;
-  background: var(--color-purple-soft);
-  border-radius: var(--radius-md);
+  padding: 15.67px 17.67px;
+  background: #f4f2fe;
+  border: 1px solid #ddd8fb;
+  border-radius: 14px;
   flex-wrap: wrap;
 }
 
 .report-card__icon {
-  width: 44px;
-  height: 44px;
+  width: 58.6px;
+  height: 58.6px;
   border-radius: 12px;
-  background: #fff;
-  color: var(--color-purple-strong);
+  background: #e9e6fe;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.report-card__icon img {
+  width: 28px;
+  height: 28px;
 }
 
 .report-card__body {
@@ -25,7 +30,7 @@
   min-width: 240px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;
 }
 
 .report-card__heading {
@@ -36,32 +41,48 @@
 
 .report-card__heading h3 {
   margin: 0;
-  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #2c2c30;
 }
 
 .report-card__badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #fff;
-  color: var(--color-purple-strong);
-  font-size: 0.75rem;
+  gap: 4px;
+  width: 92.64px;
+  height: 22.66px;
+  background: #e9e6fe;
+  color: #7367f0;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  padding: 3px 10px;
-  border-radius: var(--radius-pill);
+  font-size: 10px;
+  line-height: 100%;
+  letter-spacing: 0;
+  padding: 2.67px 8px 2.66px;
+  border-radius: 999px;
+  flex-shrink: 0;
 }
 
 .report-card__badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--color-purple-strong);
+  width: 7.03px;
+  height: 7.03px;
+  border-radius: 3.52px;
+  background: #7367f0;
+  flex-shrink: 0;
 }
 
 .report-card__description {
   margin: 0;
-  font-size: 0.85rem;
-  color: var(--color-text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0;
+  color: #5e5873;
   max-width: 640px;
 }
 
@@ -73,25 +94,55 @@
 }
 
 .report-card__bar {
-  width: 260px;
+  width: 322.79px;
   max-width: 40vw;
-  height: 6px;
-  border-radius: var(--radius-pill);
-  background: #fff;
+  height: 7.03px;
+  border-radius: 999px;
+  background: #e4e0f7;
   overflow: hidden;
 }
 
 .report-card__bar-fill {
   height: 100%;
-  background: var(--color-purple-strong);
-  border-radius: var(--radius-pill);
+  background: #7367f0;
+  border-radius: 999px;
 }
 
 .report-card__progress-label {
-  font-size: 0.8rem;
+  font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: var(--color-purple-strong);
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #7367f0;
   white-space: nowrap;
+}
+
+.report-card__locked-btn {
+  width: 124.61px;
+  height: 41.4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8.67px 15.67px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e8eaf1;
+  flex-shrink: 0;
+  cursor: not-allowed;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15.6px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #c3c4cd;
+}
+
+.report-card__locked-btn img {
+  width: 16px;
+  height: 16px;
 }
 
 @media (max-width: 700px) {

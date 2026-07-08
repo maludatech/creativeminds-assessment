@@ -1,12 +1,15 @@
 .topbar {
-  height: var(--topbar-height);
+  height: 62px;
+  margin: 14px 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 0 28px;
+  padding: 0 24px;
   background: var(--color-bg-surface);
-  border-bottom: 1px solid var(--color-border);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
 }
 
 .topbar__left {
@@ -28,21 +31,35 @@
 .topbar__breadcrumb {
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 0.95rem;
+  gap: 8px;
   min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.topbar__crumb-arrow {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.topbar__crumb-muted,
+.topbar__crumb-active {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0;
+}
+
 .topbar__crumb-muted {
-  color: var(--color-text-secondary);
+  font-weight: 400;
+  color: #2c2c30;
 }
 
 .topbar__crumb-active {
-  color: var(--color-accent);
   font-weight: 600;
+  color: var(--color-accent);
 }
 
 .topbar__actions {
@@ -53,18 +70,35 @@
 }
 
 .topbar__chat-btn {
+  width: 179px;
+  height: 40px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   border: none;
-  border-radius: var(--radius-pill);
-  padding: 10px 20px;
-  background: linear-gradient(90deg, var(--color-accent-grad-start), var(--color-accent-grad-end));
-  color: #fff;
-  font-weight: 600;
-  font-size: 0.9rem;
+  border-top: 1px solid transparent;
+  border-radius: 8px;
+  padding: 8.67px 15.67px;
+  background: linear-gradient(106.44deg, #f48322 0%, #f26ca7 100%);
   cursor: pointer;
   flex-shrink: 0;
+}
+
+.topbar__chat-btn-icon {
+  width: 27px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.topbar__chat-btn span {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.042px;
+  text-align: center;
+  color: #ffffff;
 }
 
 .topbar__bell {
@@ -101,11 +135,35 @@
   flex-shrink: 0;
 }
 
+.topbar__avatar-wrap {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+}
+
 .topbar__avatar {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   object-fit: cover;
+}
+
+.topbar__avatar-status {
+  position: absolute;
+  bottom: 1.57px;
+  right: 1.57px;
+  width: 7.86px;
+  height: 7.86px;
+  border-radius: 50%;
+  background: #28c76f;
+  border: 1px solid #fff;
+}
+
+.topbar__user-caret {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
 }
 
 .topbar__user-text {
@@ -115,13 +173,19 @@
 }
 
 .topbar__user-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--color-text-primary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  letter-spacing: 0;
+  text-align: right;
+  color: #6e6b7b;
 }
 
 .topbar__user-role {
-  font-size: 0.75rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  text-align: right;
   color: var(--color-text-tertiary);
 }
 
@@ -137,6 +201,7 @@
   }
 
   .topbar__chat-btn {
+    width: auto;
     padding: 10px;
   }
 
@@ -144,12 +209,9 @@
     display: none;
   }
 
-  .topbar__breadcrumb {
-    font-size: 0.85rem;
-  }
-
   .topbar {
     padding: 0 14px;
+    margin: 10px 12px 0;
   }
 
   .topbar__actions {

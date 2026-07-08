@@ -6,22 +6,89 @@
   flex-wrap: wrap;
 }
 
+.page-header__text {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 785px;
+}
+
 .page-header__text h1 {
-  margin: 0 0 6px;
-  font-size: 1.6rem;
-  font-weight: 700;
+  margin: 0;
+  font-family: 'General Sans', sans-serif;
+  font-weight: 600;
+  font-size: 23px;
+  line-height: 100%;
+  letter-spacing: -0.23px;
+  color: #2c2c30;
 }
 
 .page-header__text p {
   margin: 0;
-  color: var(--color-text-secondary);
-  font-size: 0.92rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #72747d;
 }
 
 .page-header__actions {
   display: flex;
   gap: 12px;
   flex-shrink: 0;
+}
+
+.page-header__team-btn {
+  width: 117.58px;
+  height: 43.75px;
+  border-radius: 8px;
+  border-width: 1px;
+  border-color: #e8eaf1;
+  padding: 8.67px 15.67px;
+  gap: 8px;
+  background: #ffffff;
+}
+
+.page-header__team-btn span {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15.6px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #5e5873;
+}
+
+.page-header__team-icon {
+  color: #72747d;
+}
+
+.page-header__new-session-btn {
+  width: 166.8px;
+  height: 41.4px;
+  border-radius: 8px;
+  padding: 8.67px 15.67px;
+  gap: 8px;
+  background: linear-gradient(104.08deg, #f48322 0%, #f26ca7 100%);
+  border: 1px solid transparent;
+  box-shadow: 0px 4px 14px 0px #f4832240;
+}
+
+.page-header__new-session-icon {
+  width: 16.41px;
+  height: 16.41px;
+  flex-shrink: 0;
+}
+
+.page-header__new-session-btn span {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 15.6px;
+  letter-spacing: 0;
+  text-align: center;
+  color: #ffffff;
 }
 
 @media (max-width: 640px) {

@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/google-sans-flex": "^5.2.4",
+    "@fontsource/montserrat": "^5.2.8",
+    "@fontsource/poppins": "^5.2.7",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

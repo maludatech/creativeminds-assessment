@@ -29,8 +29,8 @@ export function ProjectTimeCard() {
       </div>
 
       <div className="project-time-card__actions">
-        <button className="btn btn--outline btn--sm">Request More Time</button>
-        <button className="btn btn--solid btn--sm">Subscribe for more</button>
+        <button className="project-time-card__request-btn">Request More Time</button>
+        <button className="project-time-card__subscribe-btn">Subscribe for more</button>
       </div>
     </div>
   );

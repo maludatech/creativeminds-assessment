@@ -26,32 +26,36 @@ export function Dashboard() {
     <div className="dashboard">
       <Sidebar isOpen={isSidebarOpen} onClose={closeOverlays} />
 
-      <div className="dashboard__main">
+      <div className="dashboard__body">
         <TopBar onMenuClick={() => setSidebarOpen(true)} onChatClick={() => setChatOpen(true)} />
 
-        <div className="dashboard__content">
-          <div className="dashboard__card dashboard__card--flush">
-            <PageHeader />
-            <StatsGrid />
-            <ProjectTimeCard />
-            <ReportCard />
+        <div className="dashboard__lower">
+          <div className="dashboard__main">
+            <div className="dashboard__content">
+              <div className="dashboard__card dashboard__card--flush">
+                <PageHeader />
+                <StatsGrid />
+                <ProjectTimeCard />
+                <ReportCard />
 
-            <div className="dashboard__row">
-              <TodaySessions />
-              <CalendarCard />
+                <div className="dashboard__row">
+                  <TodaySessions />
+                  <CalendarCard />
+                </div>
+
+                <div className="dashboard__row">
+                  <SentimentCard />
+                  <ActiveTopicsCard />
+                </div>
+              </div>
             </div>
 
-            <div className="dashboard__row">
-              <SentimentCard />
-              <ActiveTopicsCard />
-            </div>
+            <Footer />
           </div>
+
+          <ChatPanel isOpen={isChatOpen} onClose={closeOverlays} />
         </div>
-
-        <Footer />
       </div>
-
-      <ChatPanel isOpen={isChatOpen} onClose={closeOverlays} />
 
       {(isSidebarOpen || isChatOpen) && (
         <div className="dashboard__backdrop" onClick={closeOverlays} />

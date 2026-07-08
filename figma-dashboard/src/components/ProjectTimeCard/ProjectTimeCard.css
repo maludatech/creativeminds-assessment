@@ -2,22 +2,29 @@
   display: flex;
   align-items: center;
   gap: 18px;
-  padding: 18px 20px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-lg);
+  background: #ffffff;
   flex-wrap: wrap;
 }
 
 .project-time-card__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--color-accent-soft);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  background: #fffaf5;
+  border: 1px solid var(--color-accent);
   color: var(--color-accent);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+}
+
+.project-time-card__icon svg {
+  width: 16px;
+  height: 16px;
 }
 
 .project-time-card__info {
@@ -28,25 +35,39 @@
 }
 
 .project-time-card__title {
-  font-weight: 700;
-  font-size: 0.95rem;
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: 0.08px;
+  color: #1f2937;
 }
 
 .project-time-card__allocated {
-  font-size: 0.8rem;
+  font-family: 'Google Sans Flex', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.06px;
+  color: var(--color-text-secondary);
+}
+
+.project-time-card__allocated strong {
+  font-weight: 700;
   color: var(--color-text-secondary);
 }
 
 .project-time-card__progress {
-  flex: 1;
-  min-width: 200px;
   position: relative;
+  flex: 0 0 348px;
+  width: 348px;
 }
 
 .project-time-card__bar {
-  height: 34px;
-  border-radius: var(--radius-sm);
-  background: var(--color-bg-page);
+  height: 40px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #c3c4cd;
   overflow: hidden;
   position: relative;
 }
@@ -54,7 +75,7 @@
 .project-time-card__bar-fill {
   height: 100%;
   background: var(--color-border-strong);
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  border-radius: 8px 0 0 8px;
 }
 
 .project-time-card__progress-label {
@@ -63,15 +84,67 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
-  color: var(--color-text-secondary);
-  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.036px;
+  text-align: center;
+  color: #2c2c30;
 }
 
 .project-time-card__actions {
   display: flex;
   gap: 10px;
   flex-shrink: 0;
+  margin-left: auto;
+}
+
+.project-time-card__request-btn,
+.project-time-card__subscribe-btn {
+  height: 40px;
+  border-radius: 8px;
+  padding: 5.17px 11.67px 5.57px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 14.4px;
+  letter-spacing: 0;
+  text-align: center;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.project-time-card__request-btn {
+  width: 143.36px;
+  background: #ffffff;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+}
+
+.project-time-card__request-btn:hover {
+  background: var(--color-accent-soft);
+}
+
+.project-time-card__subscribe-btn {
+  width: 142.19px;
+  background: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  color: #ffffff;
+}
+
+.project-time-card__subscribe-btn:hover {
+  background: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
+  box-shadow: 0 4px 14px 0 #f4832240;
+}
+
+@media (max-width: 900px) {
+  .project-time-card__progress {
+    flex: 1 1 240px;
+    width: auto;
+  }
 }
 
 @media (max-width: 700px) {
@@ -80,12 +153,19 @@
     align-items: stretch;
   }
 
+  .project-time-card__progress {
+    flex: 0 0 auto;
+    width: 100%;
+  }
+
   .project-time-card__actions {
+    margin-left: 0;
     justify-content: stretch;
   }
 
-  .project-time-card__actions .btn {
+  .project-time-card__request-btn,
+  .project-time-card__subscribe-btn {
     flex: 1;
-    justify-content: center;
+    width: auto;
   }
 }

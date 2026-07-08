@@ -8,6 +8,7 @@
   --color-text-primary: #1c1e21;
   --color-text-secondary: #6b6f76;
   --color-text-tertiary: #9a9da4;
+  --color-nav-text: #5e5873;
 
   /* Accent (orange) */
   --color-accent: #f48322;
@@ -30,8 +31,8 @@
   --color-info: #4b8bf4;
 
   /* Layout */
-  --sidebar-width: 270px;
-  --chat-panel-width: 460px;
+  --sidebar-width: 260px;
+  --chat-panel-width: clamp(320px, 23.07vw, 443px);
   --topbar-height: 76px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -40,5 +41,5 @@
 
   --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.04);
 
-  font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
 }

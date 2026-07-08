@@ -1,9 +1,9 @@
-import { Icon } from '../Icon/Icon';
-import './CalendarCard.css';
+import { Icon } from "../Icon/Icon";
+import "./CalendarCard.css";
 
-const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 const DAYS_IN_MONTH = 30;
-const FIRST_WEEKDAY_OFFSET = 1; // June 1, 2026 is a Monday
+const FIRST_WEEKDAY_OFFSET = 1;
 const SCHEDULED_DAYS = new Set([9, 11, 16, 18, 25]);
 const TODAY = 4;
 
@@ -36,12 +36,14 @@ export function CalendarCard() {
         {cells.map((day, i) => (
           <div
             key={i}
-            className={`calendar-card__day ${day === TODAY ? 'calendar-card__day--today' : ''}`}
+            className={`calendar-card__day ${day === TODAY ? "calendar-card__day--today" : ""}`}
           >
             {day && (
               <>
                 {day}
-                {SCHEDULED_DAYS.has(day) && <span className="calendar-card__dot" />}
+                {SCHEDULED_DAYS.has(day) && (
+                  <span className="calendar-card__dot" />
+                )}
               </>
             )}
           </div>
