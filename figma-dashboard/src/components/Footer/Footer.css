@@ -1,25 +1,32 @@
 .app-footer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px;
   padding: 16px 28px;
-  font-size: 0.78rem;
-  color: var(--color-text-tertiary);
   border-top: 1px solid var(--color-border);
+  text-align: center;
 }
 
-.app-footer__links {
-  display: flex;
-  gap: 16px;
+.app-footer,
+.app-footer a {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 20px;
+  letter-spacing: 0;
+  color: #72747d;
 }
 
 .app-footer a {
-  color: var(--color-text-tertiary);
   text-decoration: none;
 }
 
 .app-footer a:hover {
   text-decoration: underline;
+}
+
+.app-footer__separator {
+  color: #f48322;
 }

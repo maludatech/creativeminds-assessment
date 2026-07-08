@@ -1,7 +1,7 @@
 .calendar-card {
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-md);
-  padding: 20px 22px;
+  border: 1px solid #edeff5;
+  border-radius: 12px;
+  background: #ffffff;
   height: 100%;
 }
 
@@ -9,31 +9,60 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 10px;
+  padding: 14px 18px 12px;
 }
 
 .calendar-card__header h3 {
   margin: 0 0 2px;
-  font-size: 1rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 100%;
+  letter-spacing: 0.06px;
+  color: #2c2c30;
 }
 
 .calendar-card__header span {
-  font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #a3a6b7;
+}
+
+.calendar-card__header .link {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 500;
+  font-size: 11.5px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  color: #f48322;
 }
 
 .calendar-card__grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: 2px;
+  padding: 0 18px;
   margin-bottom: 6px;
 }
 
 .calendar-card__grid--weekdays {
-  color: var(--color-text-tertiary);
-  font-size: 0.75rem;
-  text-align: center;
   margin-bottom: 8px;
+}
+
+.calendar-card__grid--weekdays span {
+  display: block;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  color: #a3a6b7;
 }
 
 .calendar-card__day {
@@ -42,9 +71,12 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.82rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0;
   border-radius: 8px;
-  color: var(--color-text-primary);
+  color: #5e5873;
 }
 
 .calendar-card__day--today {
@@ -56,6 +88,7 @@
 .calendar-card__dot {
   position: absolute;
   bottom: 4px;
+  left: 6px;
   width: 4px;
   height: 4px;
   border-radius: 50%;
@@ -69,16 +102,22 @@
 .calendar-card__legend {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.78rem;
-  color: var(--color-text-secondary);
-  border-top: 1px solid var(--color-border);
-  padding-top: 12px;
-  margin-top: 4px;
+  gap: 7.01px;
+  margin: 4px 18px 0;
+  padding: 12px 0 18px;
+  border-top: 0.67px solid #edeff5;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 100%;
+  letter-spacing: 0;
+  color: #72747d;
 }
 
 .calendar-card__legend .calendar-card__dot {
   position: static;
-  width: 6px;
-  height: 6px;
+  width: 5.86px;
+  height: 5.86px;
+  border-radius: 2.93px;
+  background: #ea5455;
 }

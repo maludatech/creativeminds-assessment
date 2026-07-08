@@ -41,7 +41,7 @@ export function CalendarCard() {
             {day && (
               <>
                 {day}
-                {SCHEDULED_DAYS.has(day) && (
+                {(SCHEDULED_DAYS.has(day) || day === TODAY) && (
                   <span className="calendar-card__dot" />
                 )}
               </>
