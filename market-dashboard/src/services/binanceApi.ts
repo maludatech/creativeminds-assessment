@@ -40,9 +40,9 @@ async function request<T>(path: string): Promise<T> {
 }
 
 export function fetchExchangeInfo(): Promise<ExchangeInfoResponse> {
-  return request<ExchangeInfoResponse>("/exchangeInfo");
+  return request<ExchangeInfoResponse>("/exchange-info");
 }
 
 export function fetch24hrTickers(): Promise<Binance24hrTicker[]> {
-  return request<Binance24hrTicker[]>("/ticker/24hr");
+  return request<Binance24hrTicker[]>("/ticker-24hr");
 }

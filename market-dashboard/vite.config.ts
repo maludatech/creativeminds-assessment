@@ -6,10 +6,15 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api/binance': {
+      '/api/binance/exchange-info': {
         target: 'https://api.binance.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/binance/, '/api/v3'),
+        rewrite: () => '/api/v3/exchangeInfo',
+      },
+      '/api/binance/ticker-24hr': {
+        target: 'https://api.binance.com',
+        changeOrigin: true,
+        rewrite: () => '/api/v3/ticker/24hr',
       },
     },
   },

@@ -23,13 +23,17 @@ Open the printed local URL (defaults to `http://localhost:5173`).
 REST calls (`fetchExchangeInfo`, `fetch24hrTickers`) are routed through a same-origin proxy
 instead of calling `api.binance.com` directly from the browser:
 
-- **Local dev** — `vite.config.ts` proxies `/api/binance/*` to `https://api.binance.com/api/v3/*`.
-- **Production (Vercel)** — `api/binance/[...path].ts` is an edge function that does the same
-  thing, whitelisting only the two paths this app actually uses (`exchangeInfo`, `ticker/24hr`)
-  rather than forwarding an arbitrary path, so it can't be abused as an open proxy to the rest of
-  Binance's API. It's pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For Legal
-  Reasons` to requests that appear to originate from the US, and Vercel's edge network otherwise
-  routes to whichever region is nearest the visitor, which can land on a US region.
+- **Local dev** — `vite.config.ts` proxies `/api/binance/exchange-info` and `/api/binance/ticker-24hr`
+  to the corresponding `api.binance.com/api/v3/*` endpoints.
+- **Production (Vercel)** — `api/binance/exchange-info.ts` and `api/binance/ticker-24hr.ts` are two
+  small edge functions, each hardcoded to proxy exactly one upstream endpoint (via the shared
+  `api/_lib/binanceProxy.ts` helper) rather than accepting an arbitrary path, so there's no way to
+  abuse the deployment as an open proxy to the rest of Binance's API. (An earlier version used a
+  single catch-all `api/binance/[...path].ts` route, but Vercel's router 404'd on the two-segment
+  `ticker/24hr` path before it ever reached the function — two statically-named routes sidestep
+  that entirely.) Both are pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For
+  Legal Reasons` to requests that appear to originate from the US, and Vercel's edge network
+  otherwise routes to whichever region is nearest the visitor, which can land on a US region.
 
 This means the **deployed version works for everyone**, including reviewers on a network that
 blocks Binance, because the edge function runs on Vercel's infrastructure, not the reviewer's ISP.
