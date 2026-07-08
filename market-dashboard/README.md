@@ -13,11 +13,34 @@ npm run dev
 
 Open the printed local URL (defaults to `http://localhost:5173`).
 
-> **Note on network access:** Binance's API/WebSocket endpoints are blocked at the DNS level on
-> some ISPs (this includes some West African networks, due to regulatory restrictions on crypto
-> exchanges). If `api.binance.com` / `stream.binance.com` fail to resolve in your browser but
-> resolve fine via a public DNS server (e.g. `nslookup api.binance.com 8.8.8.8`), that's the
-> cause — switch your network's DNS resolver or use a VPN. This isn't a bug in the app.
+> **Note on network access:** Binance's endpoints are blocked at the DNS level on some ISPs (this
+> includes some West African networks, due to regulatory restrictions on crypto exchanges). This
+> isn't a bug in the app, but it does affect two different code paths differently — see the
+> trade-off below.
+
+## Trade-off: REST goes through a same-origin proxy, WebSocket doesn't
+
+REST calls (`fetchExchangeInfo`, `fetch24hrTickers`) are routed through a same-origin proxy
+instead of calling `api.binance.com` directly from the browser:
+
+- **Local dev** — `vite.config.ts` proxies `/api/binance/*` to `https://api.binance.com/api/v3/*`.
+- **Production (Vercel)** — `api/binance/[...path].ts` is an edge function that does the same
+  thing, whitelisting only the two paths this app actually uses (`exchangeInfo`, `ticker/24hr`)
+  rather than forwarding an arbitrary path, so it can't be abused as an open proxy to the rest of
+  Binance's API.
+
+This means the **deployed version works for everyone**, including reviewers on a network that
+blocks Binance, because the edge function runs on Vercel's infrastructure, not the reviewer's ISP.
+**Local dev on a Binance-blocked network still needs a VPN or a different DNS resolver** — the
+Vite proxy runs as a local Node process on your own machine, so it's subject to the same network
+block as a direct browser request would be. Once deployed, the DNS-block problem only exists for
+your own `npm run dev` session, not for anyone visiting the live URL.
+
+The **WebSocket connection is not proxied** and stays a direct `wss://stream.binance.com` connection
+from the browser, per the assessment brief ("connect to the Binance WebSocket API"). Proxying a
+persistent WebSocket through Vercel's serverless/edge functions is unreliable within their
+execution model, so on a Binance-blocked network, live ticker updates still require a VPN even
+on the deployed version — only the initial trading-pair list is guaranteed to load everywhere.
 
 ## Architecture
 

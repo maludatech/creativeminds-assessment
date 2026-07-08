@@ -1,4 +1,7 @@
-const REST_BASE_URL = 'https://api.binance.com/api/v3';
+// Routed through a same-origin proxy (Vite dev proxy locally, a Vercel edge
+// function in production) rather than hitting api.binance.com directly from
+// the browser, since Binance is DNS-blocked on some ISPs/regions.
+const REST_BASE_URL = "/api/binance";
 
 export interface BinanceSymbol {
   symbol: string;
@@ -19,17 +22,27 @@ interface ExchangeInfoResponse {
 }
 
 async function request<T>(path: string): Promise<T> {
-  const response = await fetch(`${REST_BASE_URL}${path}`);
+  let response: Response;
+  try {
+    response = await fetch(`${REST_BASE_URL}${path}`);
+  } catch {
+    throw new Error(
+      "Could not reach the market data service. Check your connection and try again " +
+        "— if this keeps happening, your network may be blocking Binance and a VPN may help.",
+    );
+  }
   if (!response.ok) {
-    throw new Error(`Binance API request failed: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Binance API request failed: ${response.status} ${response.statusText}`,
+    );
   }
   return response.json() as Promise<T>;
 }
 
 export function fetchExchangeInfo(): Promise<ExchangeInfoResponse> {
-  return request<ExchangeInfoResponse>('/exchangeInfo');
+  return request<ExchangeInfoResponse>("/exchangeInfo");
 }
 
 export function fetch24hrTickers(): Promise<Binance24hrTicker[]> {
-  return request<Binance24hrTicker[]>('/ticker/24hr');
+  return request<Binance24hrTicker[]>("/ticker/24hr");
 }
