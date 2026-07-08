@@ -28,11 +28,14 @@ instead of calling `api.binance.com` directly from the browser:
 - **Production (Vercel)** — `api/binance/exchange-info.ts` and `api/binance/ticker-24hr.ts` are two
   small Node.js Serverless Functions, each hardcoded to proxy exactly one upstream endpoint (via
   the shared `api/_lib/binanceProxy.ts` helper) rather than accepting an arbitrary path, so
-  there's no way to abuse the deployment as an open proxy to the rest of Binance's API.
+  there's no way to abuse the deployment as an open proxy to the rest of Binance's API. They use
+  the Web-standard `Request → Response` handler signature, not the classic Express-style
+  `(req, res)` one — Vercel's current Node.js runtime (Fluid Compute) expects the former; the
+  latter crashed with `FUNCTION_INVOCATION_FAILED` before the handler even ran.
   (Two earlier attempts: a catch-all `api/binance/[...path].ts` route 404'd on Vercel's router for
   the two-segment `ticker/24hr` path before it ever reached the function; and pinning `regions` on
-  the Edge runtime crashed with `FUNCTION_INVOCATION_FAILED`, since Vercel only honors per-function
-  region pinning on the classic Node.js runtime, not Edge. Both are now Node functions.) They're
+  the Edge runtime also crashed, since Vercel only honors per-function region pinning on the
+  Node.js runtime, not Edge.) They're
   pinned to `regions: ['fra1']` — Binance returns `451 Unavailable For Legal Reasons` to requests
   that appear to originate from the US, and Vercel otherwise routes to whichever region is nearest
   the visitor, which can land on a US region.

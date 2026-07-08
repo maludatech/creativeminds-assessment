@@ -3,13 +3,14 @@
 // requests, and Vercel otherwise routes to whichever region is nearest the
 // visitor, which can land on a US region.
 //
-// Uses the classic Node.js Serverless Function (req, res) signature rather
-// than the Edge runtime — Vercel only honors per-function region pinning on
-// the Node runtime.
-export async function proxyBinance(res: any, binancePath: string): Promise<void> {
+// Web-standard Request/Response signature, not the classic (req, res)
+// Express-style one — Vercel's Node.js runtime (Fluid Compute) expects this
+// form; (req, res) with res.status()/res.send() crashed with
+// FUNCTION_INVOCATION_FAILED before the handler even ran.
+export async function proxyBinance(binancePath: string): Promise<Response> {
   const upstream = await fetch(`https://api.binance.com/api/v3/${binancePath}`);
-  const body = await upstream.text();
-  res.status(upstream.status);
-  res.setHeader('content-type', upstream.headers.get('content-type') ?? 'application/json');
-  res.send(body);
+  return new Response(upstream.body, {
+    status: upstream.status,
+    headers: { 'content-type': upstream.headers.get('content-type') ?? 'application/json' },
+  });
 }
