@@ -28,7 +28,7 @@ async function request<T>(path: string): Promise<T> {
   } catch {
     throw new Error(
       "Could not reach the market data service. Check your connection and try again " +
-        "— if this keeps happening, your network may be blocking Binance and a VPN may help.",
+        "if this keeps happening, your network may be blocking Binance and a VPN may help.",
     );
   }
   if (!response.ok) {
