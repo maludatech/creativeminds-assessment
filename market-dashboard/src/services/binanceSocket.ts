@@ -58,6 +58,8 @@ class BinanceSocketService {
 
   setSymbol(symbol: string): void {
     const normalized = symbol.toLowerCase();
+    // eslint-disable-next-line no-console
+    console.log(`[binanceSocket] setSymbol(${normalized}) activeSymbol=${this.activeSymbol} readyState=${this.socket?.readyState}`);
     if (this.activeSymbol === normalized && this.socket?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -67,6 +69,8 @@ class BinanceSocketService {
   }
 
   disconnect(): void {
+    // eslint-disable-next-line no-console
+    console.log(`[binanceSocket] disconnect() activeSymbol=${this.activeSymbol}`);
     this.manuallyClosed = true;
     this.activeSymbol = null;
     this.clearReconnectTimer();
@@ -79,6 +83,10 @@ class BinanceSocketService {
   private connect(): void {
     this.clearReconnectTimer();
     this.clearStabilityTimer();
+    if (this.socket) {
+      // eslint-disable-next-line no-console
+      console.log(`[binanceSocket] connect() closing previous socket for ${this.activeSymbol}`);
+    }
     this.socket?.close();
 
     const symbol = this.activeSymbol;
@@ -108,7 +116,11 @@ class BinanceSocketService {
       );
     };
 
-    socket.onclose = () => {
+    socket.onclose = (event) => {
+      // eslint-disable-next-line no-console
+      console.log(
+        `[binanceSocket] onclose symbol=${symbol} code=${event.code} reason=${event.reason} wasClean=${event.wasClean} manuallyClosed=${this.manuallyClosed}`,
+      );
       this.clearStabilityTimer();
       if (this.manuallyClosed) return;
       this.setStatus('disconnected');
