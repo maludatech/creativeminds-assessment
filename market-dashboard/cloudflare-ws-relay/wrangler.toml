@@ -1,0 +1,11 @@
+name = "creativeminds-binance-ws-relay"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+[[durable_objects.bindings]]
+name = "BINANCE_RELAY"
+class_name = "BinanceRelay"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["BinanceRelay"]

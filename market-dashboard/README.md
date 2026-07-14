@@ -11,9 +11,9 @@ npm run dev
 
 Open the printed local URL (defaults to `http://localhost:5173`).
 
-> **Note on network access:** Binance's endpoints are blocked at the DNS level on some ISPs (this includes some West African networks, due to regulatory restrictions on crypto exchanges). This isn't a bug in the app, but it does affect two different code paths differently, see the trade-off below.
+> **Note on network access:** Binance's endpoints are blocked at the DNS level on some ISPs (this includes some West African networks, due to regulatory restrictions on crypto exchanges). This isn't a bug in the app; both REST and WebSocket calls are proxied through infrastructure that isn't subject to that restriction (see the trade-off below), but local dev on a blocked network still needs a VPN or different DNS resolver.
 
-## Trade-off: REST goes through a same-origin proxy, WebSocket doesn't
+## Trade-off: REST and WebSocket are both proxied, through different infrastructure
 
 REST calls (`fetchExchangeInfo`, `fetch24hrTickers`) are routed through a same-origin proxy
 instead of calling `api.binance.com` directly from the browser:
@@ -52,11 +52,35 @@ Vite proxy runs as a local Node process on your own machine, so it's subject to 
 block as a direct browser request would be. Once deployed, the DNS-block problem only exists for
 your own `npm run dev` session, not for anyone visiting the live URL.
 
-The **WebSocket connection is not proxied** and stays a direct `wss://stream.binance.com` connection
-from the browser, per the assessment brief ("connect to the Binance WebSocket API"). Proxying a
-persistent WebSocket through Vercel's serverless/edge functions is unreliable within their
-execution model, so on a Binance-blocked network, live ticker updates still require a VPN even
-on the deployed version, only the initial trading-pair list is guaranteed to load everywhere.
+**The WebSocket connection is also proxied**, through a Cloudflare Worker
+(`cloudflare-ws-relay/`) rather than Vercel. Still fundamentally "connecting to the Binance
+WebSocket API" per the assessment brief, just relayed through infrastructure that isn't subject
+to the visitor's network restriction, the same reasoning as the REST proxy. Vercel wasn't an
+option here: its serverless/edge functions can't hold a persistent upstream connection reliably
+(confirmed by testing, not just assumed), but Cloudflare Workers support proxying a live
+WebSocket natively. Two things that shaped the final implementation:
+
+- **A plain Worker `fetch` handler isn't a reliable place to hold a long-lived relay.** The first
+  version worked initially, then the connection silently dropped after roughly 1-2 seconds and
+  reconnected on a loop (client-side exponential backoff was doing exactly what it's supposed to,
+  masking a server-side problem). Moved the actual relay logic into a **Durable Object**
+  (`BinanceRelay`), Cloudflare's mechanism for an execution context that persists for the life of
+  a connection rather than a single request/response. (On the Workers Free plan, Durable Objects
+  require a `new_sqlite_classes` migration rather than `new_classes`, in `wrangler.toml`.)
+- **Pinning execution region wasn't necessary here**, unlike the Vercel functions. Cloudflare's
+  Worker placement is checked via a `/debug` route on the relay that reports `request.cf.colo`,
+  and it lands on a nearby non-US colo by default (confirmed `LOS`, Lagos, when tested from a
+  Nigerian network) since Cloudflare's African PoP coverage is dense enough that the "nearest to
+  visitor" default doesn't fall back to a US datacenter the way Vercel's initially did.
+
+Only `<symbol>@ticker` stream paths are accepted (matching what the app actually subscribes to),
+not an arbitrary upstream URL, so this can't be abused as an open relay either.
+
+This means **both REST and WebSocket now work for everyone**, including on a network that blocks
+Binance outright, since neither leg of the connection touches the visitor's own network path to
+Binance anymore. Local dev still needs a VPN or different DNS resolver for the reasons above
+(the Vite proxy and a locally-run relay client both run on your own machine, subject to your own
+network's restrictions), that limitation is unchanged.
 
 ## Architecture
 

@@ -10,7 +10,16 @@ export interface TickerMessage {
 type StatusListener = (status: ConnectionStatus) => void;
 type TickerListener = (ticker: TickerMessage) => void;
 
-const WS_BASE_URL = 'wss://stream.binance.com:9443/ws';
+// Routed through a Cloudflare Worker relay rather than connecting to
+// stream.binance.com directly from the browser: Binance's WebSocket endpoint
+// is DNS/network-blocked on some ISPs, the same restriction that affected
+// the REST calls (see binanceApi.ts and the market-dashboard README's
+// trade-off section). Vercel's serverless/edge functions can't hold a
+// persistent upstream WebSocket connection reliably, but Cloudflare Workers
+// support it natively, so the relay lives there instead of alongside the
+// REST proxy. Only forwards <symbol>@ticker (see cloudflare-ws-relay/), not
+// an arbitrary path.
+const WS_BASE_URL = 'wss://creativeminds-binance-ws-relay.creativeminds-assessment.workers.dev/ws';
 const MAX_RECONNECT_DELAY_MS = 30_000;
 const BASE_RECONNECT_DELAY_MS = 1_000;
 
