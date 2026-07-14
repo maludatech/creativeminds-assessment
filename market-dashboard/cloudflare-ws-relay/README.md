@@ -21,21 +21,22 @@ if you redeploy under a different subdomain.
 
 ## How it works
 
-- `src/index.js` exports a default `fetch` handler (routing + a `/debug` endpoint that reports
-  `request.cf.colo`/`country`, useful for confirming the Worker isn't executing in a region
-  Binance blocks) and a `BinanceRelay` Durable Object class that does the actual relay.
-- Each incoming WebSocket upgrade request gets a **fresh Durable Object instance**
-  (`env.BINANCE_RELAY.newUniqueId()`), so every browser tab gets its own isolated relay rather
-  than sharing one across all visitors.
-- The Durable Object opens an outbound WebSocket to Binance (`fetch()` with an `Upgrade` header,
-  the Workers-specific pattern for a client-side WebSocket connection), then pipes messages both
+- `src/index.js` exports a default `fetch` handler: a `/debug` endpoint that reports
+  `request.cf.colo`/`country` (useful for confirming the Worker isn't executing in a region
+  Binance blocks), and the actual relay for `/ws/<symbol>@ticker` requests.
+- It opens an outbound WebSocket to Binance (`fetch()` with an `Upgrade` header, the
+  Workers-specific pattern for a client-side WebSocket connection), then pipes messages both
   directions between that and the browser-facing socket.
 - Only `<symbol>@ticker` paths are accepted (`STREAM_PATTERN` in `src/index.js`), not an
   arbitrary upstream path, so this can't be used as an open relay to other WebSocket endpoints.
 
-**Why a Durable Object and not a plain Worker:** the first version used a plain `fetch` handler
-with no Durable Object. It worked initially, then dropped the connection after roughly 1-2
-seconds and reconnected in a loop, every time, confirmed with a 30-second stability test before
-and after the fix. A Durable Object is Cloudflare's mechanism for an execution context that
-persists for the life of a connection rather than a single request/response, which is what a
-relay actually needs.
+**This is a plain Worker, not a Durable Object.** An earlier version used a Durable Object
+(`BinanceRelay`, spun up fresh per connection via `newUniqueId()`), on the theory that a plain
+Worker couldn't hold a connection open past the initial request. That theory came from a
+dev-mode test that looked like a 1-2s connection drop-and-loop, but was actually React
+StrictMode double-invoking effects client-side (mimics a rapid disconnect+reconnect), which
+exposed a real race condition in `binanceSocket.ts`, not a limitation of plain Workers. Once
+that client bug was fixed, a plain Worker held connections stably through both a 30-second
+single-connection test and a rapid multi-pair-switch test, with zero drops. Durable Objects also
+carry a separate free-tier duration quota (distinct from the Workers request quota) that a plain
+Worker doesn't, so there's no upside left to paying that complexity/cost here.

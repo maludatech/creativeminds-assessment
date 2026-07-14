@@ -60,13 +60,22 @@ option here: its serverless/edge functions can't hold a persistent upstream conn
 (confirmed by testing, not just assumed), but Cloudflare Workers support proxying a live
 WebSocket natively. Two things that shaped the final implementation:
 
-- **A plain Worker `fetch` handler isn't a reliable place to hold a long-lived relay.** The first
-  version worked initially, then the connection silently dropped after roughly 1-2 seconds and
-  reconnected on a loop (client-side exponential backoff was doing exactly what it's supposed to,
-  masking a server-side problem). Moved the actual relay logic into a **Durable Object**
-  (`BinanceRelay`), Cloudflare's mechanism for an execution context that persists for the life of
-  a connection rather than a single request/response. (On the Workers Free plan, Durable Objects
-  require a `new_sqlite_classes` migration rather than `new_classes`, in `wrangler.toml`.)
+- **The relay is a plain Worker `fetch` handler**, not a Durable Object. A Durable Object was
+  tried first, on the theory that a plain Worker couldn't hold a connection open past the initial
+  request (a dev-mode test seemed to show the connection dropping after ~1-2s and looping). That
+  turned out to be a misdiagnosis: the dev-mode test was affected by React StrictMode
+  double-invoking effects, which mimics a rapid disconnect+reconnect, and the *actual* bug was a
+  client-side race condition in `binanceSocket.ts` (see its comments): closing a WebSocket
+  doesn't fire its `close` event synchronously, so switching pairs (which disconnects the old
+  socket and immediately connects a new one) meant the old socket's close event could arrive
+  *after* a new socket already existed, misread a shared `manuallyClosed` flag that had already
+  been reset for the new connection, and scheduled a bogus reconnect that tore down the brand-new
+  socket, producing an endless loop on every pair switch. Once that was fixed client-side, a
+  30-second stability test plus a rapid-multi-switch test both held with zero drops on the plain
+  Worker, no Durable Object needed. (Durable Objects also carry a separate free-tier duration
+  quota that got exhausted mid-debugging from the churn of the misdiagnosed "fix" plus repeated
+  test runs, which is what prompted re-examining whether the Durable Object was ever necessary in
+  the first place.)
 - **Pinning execution region wasn't necessary here**, unlike the Vercel functions. Cloudflare's
   Worker placement is checked via a `/debug` route on the relay that reports `request.cf.colo`,
   and it lands on a nearby non-US colo by default (confirmed `LOS`, Lagos, when tested from a
