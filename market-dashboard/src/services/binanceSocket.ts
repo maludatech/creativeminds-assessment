@@ -22,6 +22,12 @@ type TickerListener = (ticker: TickerMessage) => void;
 const WS_BASE_URL = 'wss://creativeminds-binance-ws-relay.creativeminds-assessment.workers.dev/ws';
 const MAX_RECONNECT_DELAY_MS = 30_000;
 const BASE_RECONNECT_DELAY_MS = 1_000;
+// A connection only counts as "recovered" (resetting the backoff) once it's
+// stayed open this long. Resetting on the raw open event let a
+// connect-then-immediately-drop loop retry at the ~1s base delay forever
+// instead of actually backing off, which was enough to overwhelm the relay
+// (observed: a sustained few-hundred-requests-per-minute reconnect storm).
+const STABLE_CONNECTION_MS = 3_000;
 
 /**
  * Maintains a single Binance websocket connection and lets callers subscribe
@@ -34,6 +40,7 @@ class BinanceSocketService {
   private activeSymbol: string | null = null;
   private reconnectAttempts = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  private stabilityTimer: ReturnType<typeof setTimeout> | null = null;
   private manuallyClosed = false;
   private statusListeners = new Set<StatusListener>();
   private tickerListeners = new Set<TickerListener>();
@@ -63,6 +70,7 @@ class BinanceSocketService {
     this.manuallyClosed = true;
     this.activeSymbol = null;
     this.clearReconnectTimer();
+    this.clearStabilityTimer();
     this.socket?.close();
     this.socket = null;
     this.setStatus('idle');
@@ -70,6 +78,7 @@ class BinanceSocketService {
 
   private connect(): void {
     this.clearReconnectTimer();
+    this.clearStabilityTimer();
     this.socket?.close();
 
     const symbol = this.activeSymbol;
@@ -80,8 +89,10 @@ class BinanceSocketService {
     this.socket = socket;
 
     socket.onopen = () => {
-      this.reconnectAttempts = 0;
       this.setStatus('connected');
+      this.stabilityTimer = setTimeout(() => {
+        this.reconnectAttempts = 0;
+      }, STABLE_CONNECTION_MS);
     };
 
     socket.onmessage = (event) => {
@@ -98,6 +109,7 @@ class BinanceSocketService {
     };
 
     socket.onclose = () => {
+      this.clearStabilityTimer();
       if (this.manuallyClosed) return;
       this.setStatus('disconnected');
       this.scheduleReconnect();
@@ -122,6 +134,13 @@ class BinanceSocketService {
     if (this.reconnectTimer) {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
+    }
+  }
+
+  private clearStabilityTimer(): void {
+    if (this.stabilityTimer) {
+      clearTimeout(this.stabilityTimer);
+      this.stabilityTimer = null;
     }
   }
 

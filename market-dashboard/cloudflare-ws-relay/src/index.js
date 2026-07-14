@@ -22,14 +22,17 @@ export class BinanceRelay {
       return new Response('Bad stream', { status: 400 });
     }
 
+    console.log(`[${streamPath}] connecting upstream`);
     const upstreamResponse = await fetch(`https://stream.binance.com:9443/ws/${streamPath}`, {
       headers: { Upgrade: 'websocket' },
     });
     const upstreamSocket = upstreamResponse.webSocket;
     if (!upstreamSocket) {
+      console.log(`[${streamPath}] upstream did not upgrade, status=${upstreamResponse.status}`);
       return new Response('Upstream WebSocket connection failed', { status: 502 });
     }
     upstreamSocket.accept();
+    console.log(`[${streamPath}] upstream accepted`);
 
     const [client, server] = Object.values(new WebSocketPair());
     server.accept();
@@ -38,9 +41,11 @@ export class BinanceRelay {
       server.send(event.data);
     });
     upstreamSocket.addEventListener('close', (event) => {
+      console.log(`[${streamPath}] upstream closed code=${event.code} reason=${event.reason} clean=${event.wasClean}`);
       server.close(event.code, event.reason);
     });
-    upstreamSocket.addEventListener('error', () => {
+    upstreamSocket.addEventListener('error', (event) => {
+      console.log(`[${streamPath}] upstream error: ${event.message ?? event}`);
       server.close(1011, 'Upstream error');
     });
 
@@ -50,6 +55,7 @@ export class BinanceRelay {
       }
     });
     server.addEventListener('close', (event) => {
+      console.log(`[${streamPath}] client closed code=${event.code} reason=${event.reason} clean=${event.wasClean}`);
       upstreamSocket.close(event.code, event.reason);
     });
 
