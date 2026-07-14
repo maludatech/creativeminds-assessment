@@ -116,6 +116,22 @@ pairs quickly.
 `disconnect()` (e.g. component unmount) is tracked separately so it doesn't trigger a
 reconnect loop.
 
+- The backoff only resets after a connection has stayed open for 3 seconds
+  (`STABLE_CONNECTION_MS`), not on the raw `open` event. Resetting immediately let a
+  connect-then-immediately-drop cycle retry at the ~1s base delay forever instead of actually
+  backing off, which was enough to overwhelm the relay under real conditions (confirmed via
+  `wrangler tail`: a sustained few-hundred-requests-per-minute storm).
+- Every socket event handler (`onopen`/`onmessage`/`onclose`/`onerror`) checks `this.socket ===
+  socket` before acting on itself. Closing a socket doesn't fire its `close` event synchronously,
+  it fires later on the event loop, so switching symbols (which calls `disconnect()` immediately
+  followed by `setSymbol()` for the new pair) meant the *old* socket's close event could arrive
+  after a new socket already existed, misread the shared `manuallyClosed` flag (already reset by
+  the new `setSymbol()` call), and schedule a bogus reconnect that tore down the brand-new
+  connection. That produced an endless connect/disconnect loop on every pair switch specifically
+  (never on first load, since there's no old socket to race against), reproduced with a
+  30-second stability harness plus `wrangler tail` and temporary client-side logging before
+  finding the actual sequence.
+
 ## State management
 
 Redux Toolkit, as suggested by the brief. Two slices:

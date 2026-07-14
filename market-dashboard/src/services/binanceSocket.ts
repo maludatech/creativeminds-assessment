@@ -58,8 +58,6 @@ class BinanceSocketService {
 
   setSymbol(symbol: string): void {
     const normalized = symbol.toLowerCase();
-    // eslint-disable-next-line no-console
-    console.log(`[binanceSocket] setSymbol(${normalized}) activeSymbol=${this.activeSymbol} readyState=${this.socket?.readyState}`);
     if (this.activeSymbol === normalized && this.socket?.readyState === WebSocket.OPEN) {
       return;
     }
@@ -69,8 +67,6 @@ class BinanceSocketService {
   }
 
   disconnect(): void {
-    // eslint-disable-next-line no-console
-    console.log(`[binanceSocket] disconnect() activeSymbol=${this.activeSymbol}`);
     this.manuallyClosed = true;
     this.activeSymbol = null;
     this.clearReconnectTimer();
@@ -83,10 +79,6 @@ class BinanceSocketService {
   private connect(): void {
     this.clearReconnectTimer();
     this.clearStabilityTimer();
-    if (this.socket) {
-      // eslint-disable-next-line no-console
-      console.log(`[binanceSocket] connect() closing previous socket for ${this.activeSymbol}`);
-    }
     this.socket?.close();
 
     const symbol = this.activeSymbol;
@@ -96,7 +88,19 @@ class BinanceSocketService {
     const socket = new WebSocket(`${WS_BASE_URL}/${symbol}@ticker`);
     this.socket = socket;
 
+    // Every handler below checks `this.socket === socket` before acting.
+    // Closing a socket (e.g. this.socket?.close() above, or disconnect())
+    // doesn't fire its close event synchronously, it fires later on the
+    // event loop. If setSymbol()/connect() runs again in the meantime (e.g.
+    // switching pairs, which calls disconnect() immediately followed by
+    // setSymbol() for the new pair), the old socket's close event arrives
+    // *after* a new socket already exists. Without this guard, that stale
+    // event would act on the wrong connection, e.g. scheduling a "reconnect"
+    // that tears down the brand new socket for the new symbol, producing an
+    // endless self-inflicted connect/disconnect loop on every pair switch
+    // (confirmed via relay + browser console logs during debugging).
     socket.onopen = () => {
+      if (this.socket !== socket) return;
       this.setStatus('connected');
       this.stabilityTimer = setTimeout(() => {
         this.reconnectAttempts = 0;
@@ -104,6 +108,7 @@ class BinanceSocketService {
     };
 
     socket.onmessage = (event) => {
+      if (this.socket !== socket) return;
       const data = JSON.parse(event.data as string);
       if (data.e !== '24hrTicker') return;
       this.tickerListeners.forEach((listener) =>
@@ -116,11 +121,8 @@ class BinanceSocketService {
       );
     };
 
-    socket.onclose = (event) => {
-      // eslint-disable-next-line no-console
-      console.log(
-        `[binanceSocket] onclose symbol=${symbol} code=${event.code} reason=${event.reason} wasClean=${event.wasClean} manuallyClosed=${this.manuallyClosed}`,
-      );
+    socket.onclose = () => {
+      if (this.socket !== socket) return;
       this.clearStabilityTimer();
       if (this.manuallyClosed) return;
       this.setStatus('disconnected');
@@ -128,6 +130,7 @@ class BinanceSocketService {
     };
 
     socket.onerror = () => {
+      if (this.socket !== socket) return;
       socket.close();
     };
   }
