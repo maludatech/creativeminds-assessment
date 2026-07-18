@@ -1,17 +1,12 @@
-// Pinned away from US regions: api.binance.com returns 451 (Unavailable For
-// Legal Reasons) to US-origin requests, and Vercel otherwise routes to
-// whichever region is nearest the visitor, which can land on a US region.
+// Pinned to fra1 — Binance 451s anything that looks US-origin, and Vercel
+// defaults to whichever region is nearest the visitor.
 //
-// Named `GET` export using the Web-standard Request/Response signature.
-// A default export is interpreted as the classic (req, res) => void
-// signature, which silently discards a returned Response (Vercel logs
-// "default export returned a `Response`... returns are ignored") — the
-// request just hangs instead of erroring.
+// Named `GET` export, not default — a default export gets treated as the
+// classic (req, res) signature and silently swallows our Response.
 //
-// Deliberately self-contained (no relative import of a shared helper):
-// Vercel excludes `_`-prefixed files/folders under api/ from bundling, which
-// broke a prior version that imported from `api/_lib/binanceProxy.ts` with
-// ERR_MODULE_NOT_FOUND in production despite working locally.
+// No shared helper import on purpose: Vercel drops `_`-prefixed files from
+// the bundle, which broke this in prod (worked locally, ERR_MODULE_NOT_FOUND
+// on deploy) when it lived in api/_lib/.
 export const config = { regions: ['fra1'] };
 
 export async function GET(): Promise<Response> {

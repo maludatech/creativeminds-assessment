@@ -1,6 +1,5 @@
-// Routed through a same-origin proxy (Vite dev proxy locally, a Vercel edge
-// function in production) rather than hitting api.binance.com directly from
-// the browser, since Binance is DNS-blocked on some ISPs/regions.
+// Goes through our own proxy instead of api.binance.com directly —
+// Binance is DNS-blocked on some networks.
 const REST_BASE_URL = "/api/binance";
 
 export interface BinanceSymbol {

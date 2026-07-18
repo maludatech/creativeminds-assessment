@@ -1,32 +1,23 @@
-// Relays a single Binance ticker WebSocket stream to the browser. Exists
-// because Binance's WebSocket endpoint is unreachable (DNS/network-level
-// block) on some ISPs, the same restriction that affected the REST calls
-// before those were proxied through a Vercel serverless function. Vercel's
-// serverless/edge functions can't hold a persistent upstream WebSocket
-// connection reliably, but Cloudflare Workers can.
+// Relays a Binance ticker stream to the browser — same DNS block as the
+// REST calls, and Vercel can't hold a WebSocket open, so this lives on
+// Cloudflare instead.
 //
-// Plain Worker fetch handler, not a Durable Object. A Durable Object was
-// tried first, on the assumption that a plain Worker couldn't hold a
-// connection open past the initial request -- that assumption came from a
-// dev-mode test (React StrictMode double-invokes effects, which mimics a
-// rapid disconnect+reconnect) rather than a real limitation, and the actual
-// bug turned out to be a client-side race condition in binanceSocket.ts
-// (see its comments). Durable Objects also carry a separate free-tier
-// duration quota that a plain Worker doesn't, so once the real bug was
-// fixed client-side, there was no remaining reason to pay that cost.
+// Plain fetch handler, not a Durable Object. Went down that road first
+// thinking a plain Worker couldn't keep a connection alive, but that was a
+// dev-mode StrictMode artifact, not a real limit — the actual bug was a
+// client-side race condition (see binanceSocket.ts). Durable Objects also
+// eat into a separate free-tier quota for no benefit here, so back to plain.
 //
-// Only accepts <symbol>@ticker streams (matching what the app subscribes
-// to), not an arbitrary upstream URL, so this can't be abused as an open
-// relay to arbitrary WebSocket endpoints.
+// Only <symbol>@ticker streams are accepted, not an arbitrary upstream URL —
+// don't want this turning into an open relay.
 const STREAM_PATTERN = /^[a-z0-9]+@ticker$/;
 
 export default {
   async fetch(request) {
     const url = new URL(request.url);
 
-    // Lets us confirm which Cloudflare colo/country this Worker executed in
-    // (Binance returns 451 to US-origin traffic, same issue we hit pinning
-    // Vercel function regions).
+    // Quick way to check which colo/country this ran in — Binance 451s
+    // US-origin traffic, same thing we hit pinning the Vercel functions.
     if (url.pathname === '/debug') {
       return new Response(JSON.stringify({ colo: request.cf?.colo, country: request.cf?.country }), {
         headers: { 'content-type': 'application/json' },

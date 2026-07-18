@@ -10,23 +10,15 @@ export interface TickerMessage {
 type StatusListener = (status: ConnectionStatus) => void;
 type TickerListener = (ticker: TickerMessage) => void;
 
-// Routed through a Cloudflare Worker relay rather than connecting to
-// stream.binance.com directly from the browser: Binance's WebSocket endpoint
-// is DNS/network-blocked on some ISPs, the same restriction that affected
-// the REST calls (see binanceApi.ts and the market-dashboard README's
-// trade-off section). Vercel's serverless/edge functions can't hold a
-// persistent upstream WebSocket connection reliably, but Cloudflare Workers
-// support it natively, so the relay lives there instead of alongside the
-// REST proxy. Only forwards <symbol>@ticker (see cloudflare-ws-relay/), not
-// an arbitrary path.
+// Same DNS block as the REST calls, so this goes through the Cloudflare
+// relay instead of stream.binance.com directly. Vercel can't hold a
+// WebSocket open past the initial request; Cloudflare Workers can.
 const WS_BASE_URL = 'wss://creativeminds-binance-ws-relay.creativeminds-assessment.workers.dev/ws';
 const MAX_RECONNECT_DELAY_MS = 30_000;
 const BASE_RECONNECT_DELAY_MS = 1_000;
-// A connection only counts as "recovered" (resetting the backoff) once it's
-// stayed open this long. Resetting on the raw open event let a
-// connect-then-immediately-drop loop retry at the ~1s base delay forever
-// instead of actually backing off, which was enough to overwhelm the relay
-// (observed: a sustained few-hundred-requests-per-minute reconnect storm).
+// Backoff only resets once a connection's stayed open this long. Resetting
+// on the raw open event let a connect-then-drop loop retry every ~1s
+// forever and hammered the relay.
 const STABLE_CONNECTION_MS = 3_000;
 
 /**
@@ -88,17 +80,10 @@ class BinanceSocketService {
     const socket = new WebSocket(`${WS_BASE_URL}/${symbol}@ticker`);
     this.socket = socket;
 
-    // Every handler below checks `this.socket === socket` before acting.
-    // Closing a socket (e.g. this.socket?.close() above, or disconnect())
-    // doesn't fire its close event synchronously, it fires later on the
-    // event loop. If setSymbol()/connect() runs again in the meantime (e.g.
-    // switching pairs, which calls disconnect() immediately followed by
-    // setSymbol() for the new pair), the old socket's close event arrives
-    // *after* a new socket already exists. Without this guard, that stale
-    // event would act on the wrong connection, e.g. scheduling a "reconnect"
-    // that tears down the brand new socket for the new symbol, producing an
-    // endless self-inflicted connect/disconnect loop on every pair switch
-    // (confirmed via relay + browser console logs during debugging).
+    // Closing a socket doesn't fire its close event synchronously — it can
+    // arrive after we've already moved on to a new one (e.g. switching
+    // pairs). Every handler checks `this.socket === socket` so a stale
+    // event from an old socket can't mess with the current connection.
     socket.onopen = () => {
       if (this.socket !== socket) return;
       this.setStatus('connected');
