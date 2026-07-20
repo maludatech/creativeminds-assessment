@@ -1,5 +1,4 @@
-// Goes through our own proxy instead of api.binance.com directly —
-// Binance is DNS-blocked on some networks.
+// Goes through our own proxy instead of api.binance.com directly since Binance is DNS-blocked on some networks.
 const REST_BASE_URL = "/api/binance";
 
 export interface BinanceSymbol {

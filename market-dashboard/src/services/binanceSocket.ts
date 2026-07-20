@@ -1,4 +1,9 @@
-export type ConnectionStatus = 'idle' | 'connecting' | 'connected' | 'disconnected' | 'reconnecting';
+export type ConnectionStatus =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "disconnected"
+  | "reconnecting";
 
 export interface TickerMessage {
   symbol: string;
@@ -10,25 +15,21 @@ export interface TickerMessage {
 type StatusListener = (status: ConnectionStatus) => void;
 type TickerListener = (ticker: TickerMessage) => void;
 
-// Same DNS block as the REST calls, so this goes through the Cloudflare
-// relay instead of stream.binance.com directly. Vercel can't hold a
-// WebSocket open past the initial request; Cloudflare Workers can.
-const WS_BASE_URL = 'wss://creativeminds-binance-ws-relay.creativeminds-assessment.workers.dev/ws';
+// Binance's stream endpoint is DNS-blocked on some ISPs, so this goes through a Cloudflare Worker relay instead of connecting directly.
+const WS_BASE_URL =
+  "wss://creativeminds-binance-ws-relay.creativeminds-assessment.workers.dev/ws";
 const MAX_RECONNECT_DELAY_MS = 30_000;
 const BASE_RECONNECT_DELAY_MS = 1_000;
-// Backoff only resets once a connection's stayed open this long. Resetting
-// on the raw open event let a connect-then-drop loop retry every ~1s
-// forever and hammered the relay.
+// Only reset backoff after the connection has been stable for a bit resetting on open alone caused rapid retry loops on flaky connections.
 const STABLE_CONNECTION_MS = 3_000;
 
 /**
- * Maintains a single Binance websocket connection and lets callers subscribe
- * to one symbol's 24hr ticker stream at a time. Reconnects automatically
- * with exponential backoff and resubscribes to the active symbol on reconnect.
+ * Manages a single Binance WebSocket connection for one symbol at a time.
+ * Reconnects automatically with exponential backoff.
  */
 class BinanceSocketService {
   private socket: WebSocket | null = null;
-  private status: ConnectionStatus = 'idle';
+  private status: ConnectionStatus = "idle";
   private activeSymbol: string | null = null;
   private reconnectAttempts = 0;
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
@@ -50,7 +51,10 @@ class BinanceSocketService {
 
   setSymbol(symbol: string): void {
     const normalized = symbol.toLowerCase();
-    if (this.activeSymbol === normalized && this.socket?.readyState === WebSocket.OPEN) {
+    if (
+      this.activeSymbol === normalized &&
+      this.socket?.readyState === WebSocket.OPEN
+    ) {
       return;
     }
     this.activeSymbol = normalized;
@@ -65,7 +69,7 @@ class BinanceSocketService {
     this.clearStabilityTimer();
     this.socket?.close();
     this.socket = null;
-    this.setStatus('idle');
+    this.setStatus("idle");
   }
 
   private connect(): void {
@@ -76,17 +80,14 @@ class BinanceSocketService {
     const symbol = this.activeSymbol;
     if (!symbol) return;
 
-    this.setStatus(this.reconnectAttempts > 0 ? 'reconnecting' : 'connecting');
+    this.setStatus(this.reconnectAttempts > 0 ? "reconnecting" : "connecting");
     const socket = new WebSocket(`${WS_BASE_URL}/${symbol}@ticker`);
     this.socket = socket;
 
-    // Closing a socket doesn't fire its close event synchronously — it can
-    // arrive after we've already moved on to a new one (e.g. switching
-    // pairs). Every handler checks `this.socket === socket` so a stale
-    // event from an old socket can't mess with the current connection.
+    // Each handler checks this.socket === socket so events from a previous connection don't interfere when switching symbols.
     socket.onopen = () => {
       if (this.socket !== socket) return;
-      this.setStatus('connected');
+      this.setStatus("connected");
       this.stabilityTimer = setTimeout(() => {
         this.reconnectAttempts = 0;
       }, STABLE_CONNECTION_MS);
@@ -95,7 +96,7 @@ class BinanceSocketService {
     socket.onmessage = (event) => {
       if (this.socket !== socket) return;
       const data = JSON.parse(event.data as string);
-      if (data.e !== '24hrTicker') return;
+      if (data.e !== "24hrTicker") return;
       this.tickerListeners.forEach((listener) =>
         listener({
           symbol: data.s,
@@ -110,7 +111,7 @@ class BinanceSocketService {
       if (this.socket !== socket) return;
       this.clearStabilityTimer();
       if (this.manuallyClosed) return;
-      this.setStatus('disconnected');
+      this.setStatus("disconnected");
       this.scheduleReconnect();
     };
 
